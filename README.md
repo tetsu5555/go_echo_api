@@ -1,7 +1,8 @@
 # go_echo_api
 
 ## 説明
-GolangのフレームワークEchoの勉強のために作ってみました。
+GolangのフレームワークEchoの勉強。
+特に大したことはしていない。
 
 ## 起動
 
@@ -37,3 +38,16 @@ $ git config --local user.email { 自身のGitHubアカウントのメールア�
 ```bash
 $ go run main.go
 ```
+
+## 公式ドキュメント
+
+[Echo](https://echo.labstack.com/guide)
+
+## メモ
+
+*Middleware*
+この機能を使うと、ビジネスロジックの前後に共通して実施したい処理を差し込むことができる。
+
+あとで読む
+
+[Try Golang! EchoでオリジナルのMiddlewareを作ろう！](https://medium.com/veltra-engineering/echo-middleware-in-golang-90e1d301eb27)

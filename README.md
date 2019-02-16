@@ -48,6 +48,9 @@ $ go run main.go
 *Middleware*
 この機能を使うと、ビジネスロジックの前後に共通して実施したい処理を差し込むことができる。
 
+見直すときはこれを見よう
+[gobyexample](https://gobyexample.com/)
+
 あとで読む
 
 [Try Golang! EchoでオリジナルのMiddlewareを作ろう！](https://medium.com/veltra-engineering/echo-middleware-in-golang-90e1d301eb27)

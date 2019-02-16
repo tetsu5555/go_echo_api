@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"./animal"
 	"./cat"
@@ -17,6 +18,10 @@ func mainAdmin(c echo.Context) error {
 	return c.String(http.StatusOK, "horay you are on the secret admin page!")
 }
 
+func mainCookie(c echo.Context) error {
+	return c.String(http.StatusOK, "you are on the not secret cookie page!")
+}
+
 // カスタムmiddllewareを作成
 // レスポンスヘッダーに書き込みを行うs
 func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
@@ -26,6 +31,29 @@ func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
 
 		return next(c)
 	}
+}
+
+func login(c echo.Context) error {
+	username := c.QueryParam("username")
+	password := c.QueryParam("password")
+
+	// check username and password against DB after hashing the password
+	if username == "jack" && password == "1234" {
+		cookie := &http.Cookie{}
+
+		// this is the same
+		//cookie := new(http.Cookie)
+
+		cookie.Name = "sessionID"
+		cookie.Value = "some_string"
+		cookie.Expires = time.Now().Add(48 * time.Hour)
+
+		c.SetCookie(cookie)
+
+		return c.String(http.StatusOK, "You were logged in!")
+	}
+
+	return c.String(http.StatusUnauthorized, "Your username or password were wrong")
 }
 
 func main() {
@@ -54,12 +82,15 @@ func main() {
 	e.POST("/cats", animal.AddCat)
 	e.POST("/dogs", animal.AddDog)
 	e.POST("/hamsters", animal.AddHamster)
+	e.GET("/login", login)
 
 	// Groupを作成
-	g := e.Group("/admin")
+	adminGropu := e.Group("/admin")
+	cookieGropu := e.Group("/cookie")
 
 	// /admin/maiにリクエストした際に、mainAdminが呼び出されるようになる
-	g.GET("/main", mainAdmin)
+	adminGropu.GET("/main", mainAdmin)
+	cookieGropu.GET("/main", mainCookie)
 
 	e.Renderer = template.Renderer
 	// Named route "foobar"

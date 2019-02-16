@@ -8,7 +8,7 @@ import (
 )
 
 // TemplateReno
-derer is a custom html/template renderer for Echo framework
+// derer is a custom html/template renderer for Echo framework
 type TemplateRenderer struct {
 	templates *template.Template
 }

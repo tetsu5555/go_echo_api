@@ -29,6 +29,7 @@ func main() {
 	e.Static("/static", "static")
 
 	// ルーティング
+	// 第三引数に渡したミドルウェアでBasicAuthenticationを行なっている
 	e.GET("/hello/:username", handler.MainPage(), interceptor.BasicAuth())
 
 	e.GET("/cats/:data", cat.GetCat)
@@ -40,7 +41,9 @@ func main() {
 	// Groupを作成
 	g := e.Group("/admin")
 	// Groupに対してmiddleware設定する
-	g.Use(middleware.Logger())
+	g.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
+	}))
 	// /admin/maiにリクエストした際に、mainAdminが呼び出されるようになる
 	g.GET("/main", mainAdmin)
 

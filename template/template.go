@@ -7,7 +7,8 @@ import (
 	"github.com/labstack/echo"
 )
 
-// TemplateRenderer is a custom html/template renderer for Echo framework
+// TemplateReno
+derer is a custom html/template renderer for Echo framework
 type TemplateRenderer struct {
 	templates *template.Template
 }

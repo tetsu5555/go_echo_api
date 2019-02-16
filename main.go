@@ -13,6 +13,10 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
+func mainAdmin(c echo.Context) error {
+	return c.String(http.StatusOK, "horay you are on the secret admin page!")
+}
+
 func main() {
 	// Echoのインスタンス作る
 	e := echo.New()
@@ -32,6 +36,13 @@ func main() {
 	e.POST("/cats", animal.AddCat)
 	e.POST("/dogs", animal.AddDog)
 	e.POST("/hamsters", animal.AddHamster)
+
+	// Groupを作成
+	g := e.Group("/admin")
+	// Groupに対してmiddleware設定する
+	g.Use(middleware.Logger())
+	// /admin/maiにリクエストした際に、mainAdminが呼び出されるようになる
+	g.GET("/main", mainAdmin)
 
 	e.Renderer = template.Renderer
 	// Named route "foobar"

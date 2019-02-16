@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"./animal"
@@ -19,18 +21,7 @@ func mainAdmin(c echo.Context) error {
 }
 
 func mainCookie(c echo.Context) error {
-	return c.String(http.StatusOK, "you are on the not secret cookie page!")
-}
-
-// カスタムmiddllewareを作成
-// レスポンスヘッダーに書き込みを行うs
-func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		c.Response().Header().Set(echo.HeaderServer, "BlueBot/1.0")
-		c.Response().Header().Set("noHeader", "thisHaveNoMeaning")
-
-		return next(c)
-	}
+	return c.String(http.StatusOK, "you are on the cookie page!")
 }
 
 func login(c echo.Context) error {
@@ -54,6 +45,37 @@ func login(c echo.Context) error {
 	}
 
 	return c.String(http.StatusUnauthorized, "Your username or password were wrong")
+}
+
+// カスタムmiddllewareを作成
+// レスポンスヘッダーに書き込みを行うs
+func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set(echo.HeaderServer, "BlueBot/1.0")
+		c.Response().Header().Set("noHeader", "thisHaveNoMeaning")
+
+		return next(c)
+	}
+}
+
+func checkCookie(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cookie, err := c.Cookie("sessionID")
+		if err != nil {
+			if strings.Contains(err.Error(), "named cookie not present") {
+				return c.String(http.StatusUnauthorized, "you dont have any cookie")
+			}
+
+			log.Println(err)
+			return err
+		}
+
+		if cookie.Value == "some_string" {
+			return next(c)
+		}
+
+		return c.String(http.StatusUnauthorized, "you dont have the right cookie, cookie")
+	}
 }
 
 func main() {
@@ -87,6 +109,8 @@ func main() {
 	// Groupを作成
 	adminGropu := e.Group("/admin")
 	cookieGropu := e.Group("/cookie")
+
+	cookieGropu.Use(checkCookie)
 
 	// /admin/maiにリクエストした際に、mainAdminが呼び出されるようになる
 	adminGropu.GET("/main", mainAdmin)

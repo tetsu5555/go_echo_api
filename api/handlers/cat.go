@@ -1,4 +1,4 @@
-package cat
+package handlers
 
 import (
 	"fmt"

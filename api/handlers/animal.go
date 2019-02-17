@@ -1,4 +1,4 @@
-package animal
+package handlers
 
 import (
 	"encoding/json"

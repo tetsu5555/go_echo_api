@@ -1,4 +1,4 @@
-package interceptor
+package handlers
 
 import (
 	"github.com/labstack/echo"

@@ -48,6 +48,9 @@ $ go run main.go
 *Middleware*
 この機能を使うと、ビジネスロジックの前後に共通して実施したい処理を差し込むことができる。
 
+*型アサーション*
+https://maku77.github.io/hugo/go/cast.html
+
 ## JWT
 *１、TOKENの発行*
 

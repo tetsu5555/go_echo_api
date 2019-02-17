@@ -48,10 +48,27 @@ $ go run main.go
 *Middleware*
 この機能を使うと、ビジネスロジックの前後に共通して実施したい処理を差し込むことができる。
 
-見直すときはこれを見よう
+## JWT
+*１、TOKENの発行*
+
+http://localhost:8000/login?username=jack&password=1234
+にリクエストを送ってtokenを発行する
+
+*2、Authorizationヘッダーを追加してリクエストを送る*
+
+HTTP　HEADERのAuthorizationに
+
+```
+Authorization: Bearer (token)
+```
+
+を追加してリクエストを送ろる
+
+
+## 見直すときはこれを見よう
 [gobyexample](https://gobyexample.com/)
 
-あとで読む
+## あとで読む
 
 [Try Golang! EchoでオリジナルのMiddlewareを作ろう！](https://medium.com/veltra-engineering/echo-middleware-in-golang-90e1d301eb27)
 

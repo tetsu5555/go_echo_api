@@ -30,6 +30,10 @@ func mainCookie(c echo.Context) error {
 	return c.String(http.StatusOK, "you are on the cookie page!")
 }
 
+func mainJwt(c echo.Context) error {
+	return c.String(http.StatusOK, "you are on the secret jwt page!")
+}
+
 func login(c echo.Context) error {
 	username := c.QueryParam("username")
 	password := c.QueryParam("password")
@@ -143,12 +147,20 @@ func main() {
 	// Groupを作成
 	adminGroup := e.Group("/admin")
 	cookieGroup := e.Group("/cookie")
+	jwtGroup := e.Group("/jwt")
 
 	cookieGroup.Use(checkCookie)
+
+	// /jwt にリクエストを送った際にJWTトークンでの認証を行う
+	jwtGroup.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningMethod: "HS512",
+		SigningKey:    []byte("mySecret"),
+	}))
 
 	// /admin/maiにリクエストした際に、mainAdminが呼び出されるようになる
 	adminGroup.GET("/main", mainAdmin)
 	cookieGroup.GET("/main", mainCookie)
+	jwtGroup.GET("/main", mainJwt)
 
 	e.Renderer = template.Renderer
 	// Named route "foobar"

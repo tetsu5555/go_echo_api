@@ -141,14 +141,14 @@ func main() {
 	e.GET("/login", login)
 
 	// Groupを作成
-	adminGropu := e.Group("/admin")
-	cookieGropu := e.Group("/cookie")
+	adminGroup := e.Group("/admin")
+	cookieGroup := e.Group("/cookie")
 
-	cookieGropu.Use(checkCookie)
+	cookieGroup.Use(checkCookie)
 
 	// /admin/maiにリクエストした際に、mainAdminが呼び出されるようになる
-	adminGropu.GET("/main", mainAdmin)
-	cookieGropu.GET("/main", mainCookie)
+	adminGroup.GET("/main", mainAdmin)
+	cookieGroup.GET("/main", mainCookie)
 
 	e.Renderer = template.Renderer
 	// Named route "foobar"

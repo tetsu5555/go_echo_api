@@ -10,7 +10,6 @@ import (
 	"./cat"
 	"./handler"
 	"./interceptor"
-	"./template"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
@@ -135,6 +134,7 @@ func main() {
 
 	// 全てのリクエストで差し込みたいミドルウェア（ログとか）はここ
 	// e.Use(middleware.Logger())
+
 	e.Use(middleware.Recover())
 	// Groupに対してmiddleware設定する
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
@@ -142,7 +142,10 @@ func main() {
 	}))
 
 	// 静的ファイルのパスを設定
-	e.Static("/static", "static")
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:  "static",
+		HTML5: true,
+	}))
 
 	// ルーティング
 	// 第三引数に渡したミドルウェアでBasicAuthenticationを行なっている
@@ -172,15 +175,6 @@ func main() {
 	adminGroup.GET("/main", mainAdmin)
 	cookieGroup.GET("/main", mainCookie)
 	jwtGroup.GET("/main", mainJwt)
-
-	e.Renderer = template.Renderer
-	// Named route "foobar"
-	e.GET("/template", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "template.html", map[string]interface{}{
-			"name": "Dolly!",
-		})
-	}).Name = "foobar"
-	e.Logger.Fatal(e.Start(":8000"))
 
 	// サーバー起動
 	e.Start(":8000") //ポート番号指定してね

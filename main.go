@@ -31,6 +31,17 @@ func mainCookie(c echo.Context) error {
 }
 
 func mainJwt(c echo.Context) error {
+	// contextに定義されているstoreからデータを取得する
+	user := c.Get("user")
+
+	// ここどういう処理？
+	token := user.(*jwt.Token)
+
+	// ここでmapに変換している
+	claims := token.Claims.(jwt.MapClaims)
+
+	log.Println("User Name: ", claims["name"], "User ID: ", claims["jti"])
+
 	return c.String(http.StatusOK, "you are on the secret jwt page!")
 }
 
@@ -51,7 +62,7 @@ func login(c echo.Context) error {
 
 		c.SetCookie(cookie)
 
-		// TODO: create jwt token
+		// create jwt token
 		token, err := createJwtToken()
 		if err != nil {
 			log.Println("Error creating JWT token", err)

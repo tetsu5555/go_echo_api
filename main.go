@@ -12,9 +12,15 @@ import (
 	"./interceptor"
 	"./template"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
+
+type JwtClaims struct {
+	Name string `json:"name"`
+	jwt.StandardClaims
+}
 
 func mainAdmin(c echo.Context) error {
 	return c.String(http.StatusOK, "horay you are on the secret admin page!")
@@ -41,10 +47,38 @@ func login(c echo.Context) error {
 
 		c.SetCookie(cookie)
 
-		return c.String(http.StatusOK, "You were logged in!")
+		// TODO: create jwt token
+		token, err := createJwtToken()
+		if err != nil {
+			log.Println("Error creating JWT token", err)
+			return c.String(http.StatusInternalServerError, "something went wrong")
+		}
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": "You were logged in",
+			"token":   token,
+		})
 	}
 
 	return c.String(http.StatusUnauthorized, "Your username or password were wrong")
+}
+
+func createJwtToken() (string, error) {
+	claims := JwtClaims{
+		"jack",
+		jwt.StandardClaims{
+			Id:        "main_user_id",
+			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
+		},
+	}
+	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
+
+	token, err := rawToken.SignedString([]byte("mySecret"))
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
 // カスタムmiddllewareを作成

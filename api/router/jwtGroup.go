@@ -1,7 +1,7 @@
-package api
+package router
 
 import (
-	"./handlers"
+	"api/handlers"
 
 	"github.com/labstack/echo"
 )

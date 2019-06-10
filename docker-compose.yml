@@ -1,0 +1,12 @@
+version: '2'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    # links:
+    #   - db
+    volumes:
+      - .:/go/src
+    ports:
+      - 3000:3000
